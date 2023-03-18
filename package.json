@@ -1,0 +1,14 @@
+{
+  "name": "project3",
+  "version": "1.0.0",
+  "description": "third project witm node js",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodemon app"
+  },
+  "author": "Ahmed Nehad",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
