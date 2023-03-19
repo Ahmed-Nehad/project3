@@ -1,0 +1,26 @@
+[
+  {
+    "id": 0,
+    "name": "Die Hard",
+    "year": 1998,
+    "time": 90
+  },
+  {
+    "id": 1,
+    "name": "Expandables",
+    "year": 2008,
+    "time": 80
+  },
+  {
+    "id": 2,
+    "name": "Home alone",
+    "year": 2018,
+    "time": 120
+  },
+  {
+    "id": 3,
+    "name": "Gay",
+    "year": 2001,
+    "time": 90
+  }
+]
