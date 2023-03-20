@@ -1,6 +1,27 @@
 const fs = require('fs');
 let movies = JSON.parse(fs.readFileSync('./data/movies.json', 'utf-8'));
 
+exports.checkId = (req, res, next, value) => {
+  const id = value * 1;
+  const movie = movies.find(m => m.id === id);
+  if(!movie){
+    return res.status(404).json({
+      status: "fail",
+      message: 'movie with id: ' + id + ' is not found'
+    });
+  };
+  next();
+};
+exports.checkBody = (req, res, next) => {
+    if(!req.body.name || !req.body.year || !req.body.time){
+        return res.status(404).json({
+            status: "fail",
+            message: 
+            `the movie you want to add is missing data (name:${!(!req.body.name)}, year:${!(!req.body.year)}, time:${!(!req.body.time)})`
+        });
+    }
+    next();
+};
 exports.getMovies = (req, res) => {
   if(!req.params.id){
       return res.status(200).json({
@@ -14,19 +35,12 @@ exports.getMovies = (req, res) => {
   }else{
       const id = req.params.id * 1;
       const movie = movies.find(m => m.id === id);
-      if(movie){
-          return res.status(200).json({
-              status: "sucess",
-              data: {
-                  movies: movie,
-              }
-          });
-      }else{
-          return res.status(404).json({
-              status: "fail",
-              message: 'movie with id: ' + id + ' is not found'
-          });
-      };
+      return res.status(200).json({
+          status: "sucess",
+          data: {
+              movies: movie,
+          }
+      });
   }
 };
 exports.uploadMovie = (req, res) => {
@@ -44,7 +58,7 @@ exports.uploadMovie = (req, res) => {
           res.status(201).json({
               status: "sucess",
               data: {
-                  movies : movie
+                  movie : movie
               }
           });
   });
@@ -53,52 +67,39 @@ exports.updateMovie = (req, res) => {
   const id = req.params.id * 1;
   const movie = movies.find(m => m.id === id);
   const movieIndex = movies.indexOf(movie);
-  if(movie){
-      const newMovie = Object.assign(movie, req.body);
-      movies[movieIndex] = newMovie;
-      fs.writeFile('./data/movies.json', JSON.stringify(movies), err => {
-          if(err){
-              return res.status(404).json({
-                  status: "fail",
-                  message: err.message
-              });
-          }
-          else
-              return res.status(201).json({
-                  status: "sucess",
-                  data: {
-                      movies : newMovie
-                  }
-              });
-      });
-  }else{
-      return res.status(404).json({
-          status: "fail",
-          message: 'movie with id: ' + id + ' is not found'
-      });
-  };
+  const newMovie = Object.assign(movie, req.body);
+  movies[movieIndex] = newMovie;
+  fs.writeFile('./data/movies.json', JSON.stringify(movies), err => {
+    if(err){
+        return res.status(404).json({
+            status: "fail",
+            message: err.message
+        });
+    }
+    else
+        return res.status(201).json({
+            status: "sucess",
+            data: {
+                movie : newMovie
+            }
+        });
+  });
 };
 exports.deleteMovie = (req, res) => {
   const id = req.params.id * 1;
   const movie = movies.find(m => m.id === id);
   const movieIndex = movies.indexOf(movie);
-  if(movie){
-      movies.splice(movieIndex, 1);
-      fs.writeFile('./data/movies.json', JSON.stringify(movies), err => {
-          if(err){
-              return res.status(404).json({
-                  status: "fail",
-                  message: err.message
-              });
-          }
-          return res.status(201).json({
-              status: "sucess"
-          });
-      });
-  }else{
-      return res.status(404).json({
-          status: "fail",
-          message: 'movie with id: ' + id + ' is not found'
-      });
-  };
+    movies.splice(movieIndex, 1);
+    movies.map(e => e.id = movies.indexOf(e));
+    fs.writeFile('./data/movies.json', JSON.stringify(movies), err => {
+        if(err){
+            return res.status(404).json({
+                status: "fail",
+                message: err.message
+            });
+        }
+        return res.status(201).json({
+            status: "sucess"
+        });
+    });
 };
