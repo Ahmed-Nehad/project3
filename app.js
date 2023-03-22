@@ -5,7 +5,10 @@ const moviesRouter = require('./Routes/moviesRoutes');
 let app = express();
 
 app.use(express.json());
-app.use(morgan('dev'));
+if(process.env.NODE_ENV === 'development')
+    app.use(morgan('dev'));
+    
+app.use(express.static('./public'));
 app.use((req, res, next) => {
     req.time = new Date().toISOString();
     next();

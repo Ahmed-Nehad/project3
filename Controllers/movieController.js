@@ -44,7 +44,7 @@ exports.getMovies = (req, res) => {
   }
 };
 exports.uploadMovie = (req, res) => {
-  const id = movies.length;
+  const id = movies[movies.length - 1].id + 1;
   const movie = Object.assign({id: id}, req.body);
   movies.push(movie);
   fs.writeFile('./data/movies.json', JSON.stringify(movies), err => {
@@ -86,11 +86,10 @@ exports.updateMovie = (req, res) => {
   });
 };
 exports.deleteMovie = (req, res) => {
-  const id = req.params.id * 1;
-  const movie = movies.find(m => m.id === id);
-  const movieIndex = movies.indexOf(movie);
+    const id = req.params.id * 1;
+    const movie = movies.find(m => m.id === id);
+    const movieIndex = movies.indexOf(movie);
     movies.splice(movieIndex, 1);
-    movies.map(e => e.id = movies.indexOf(e));
     fs.writeFile('./data/movies.json', JSON.stringify(movies), err => {
         if(err){
             return res.status(404).json({
